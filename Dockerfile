@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     apt-utils \
     git-core \
     openssh-client \
+    corkscrew \
     curl \
     libmcrypt-dev \
     libicu-dev \
