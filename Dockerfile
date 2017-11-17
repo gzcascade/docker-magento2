@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure hash --with-mhash \
     && docker-php-ext-install -j$(nproc) mcrypt intl xsl gd zip pdo_mysql opcache soap bcmath json iconv \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && pecl install xdebug && docker-php-ext-enable xdebug \
+    && echo "xdebug.max_nesting_level=1000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && chmod 666 /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
     # && apt-get clean && apt-get update && apt-get install -y nodejs \
