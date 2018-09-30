@@ -8,23 +8,14 @@ COPY --from=gzcascade/gosu /usr/local/bin/gosu /usr/local/bin/gosu
 ENV CLI_USER=ci-user
 ENV CLI_GROUP=ci-user
 
-RUN { \
-        echo 'deb http://mirrors.aliyun.com/debian/ jessie main non-free contrib'; \
-        echo 'deb http://mirrors.aliyun.com/debian/ jessie-updates main non-free contrib'; \
-        echo 'deb http://mirrors.aliyun.com/debian/ jessie-backports main non-free contrib'; \
-        echo 'deb-src http://mirrors.aliyun.com/debian/ jessie main non-free contrib'; \
-        echo 'deb-src http://mirrors.aliyun.com/debian/ jessie-updates main non-free contrib'; \
-        echo 'deb-src http://mirrors.aliyun.com/debian/ jessie-backports main non-free contrib'; \
-        echo 'deb http://mirrors.aliyun.com/debian-security/ jessie/updates main non-free contrib'; \
-        echo 'deb-src http://mirrors.aliyun.com/debian-security/ jessie/updates main non-free contrib'; \
-    } | tee /etc/apt/sources.list \
-    && set -xe \
+RUN set -xe \
 # add cl user
     && groupadd -g 1000 ${CLI_GROUP} \
     && useradd -u 1000 -g ${CLI_GROUP} ${CLI_USER} \
     && apt-get update && apt-get install -y --no-install-recommends \
         curl \
         git \
+        unzip \
         libmcrypt-dev \
         libicu-dev \
         libxml2-dev libxslt1-dev \
