@@ -44,10 +44,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
     && mkdir -p ${COMPOSER_HOME} \
     && chmod 777 ${COMPOSER_HOME} \
 # add magento2 cs
-    && curl -L -o /home/${CLI_USER}/${MAGENTO_CS_VERSION}.tar.gz https://github.com/magento/marketplace-eqp/archive/${MAGENTO_CS_VERSION}.tar.gz \
-    && tar -zxf /home/${CLI_USER}/${MAGENTO_CS_VERSION}.tar.gz --directory /home/${CLI_USER} \
-    && rm -f /home/${CLI_USER}/${MAGENTO_CS_VERSION}.tar.gz \
-    && chown -R ${CLI_USER}:${CLI_GROUP} /home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION} \
-    && su ${CLI_USER} -c "composer install -d /home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}"
+    && gosu ${CLI_USER} curl -sSL https://github.com/magento/marketplace-eqp/archive/${MAGENTO_CS_VERSION}.tar.gz \
+    | gosu ${CLI_USER} tar -zx --directory /home/${CLI_USER} \
+    && gosu ${CLI_USER} composer install -d /home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}
 
 VOLUME ${COMPOSER_HOME}
