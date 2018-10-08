@@ -11,7 +11,7 @@ ENV CLI_GROUP=ci-user
 RUN set -xe \
 # add cl user
     && groupadd -g 1000 ${CLI_GROUP} \
-    && useradd -u 1000 -g ${CLI_GROUP} ${CLI_USER} \
+    && useradd -u 1000 -m -d /home/${CLI_USER} -g ${CLI_GROUP} ${CLI_USER} \
     && apt-get update && apt-get install -y --no-install-recommends \
         curl \
         git \
@@ -35,9 +35,19 @@ RUN set -xe \
 
 ENV COMPOSER_HOME=/tmp/.composer
 
+ENV MAGENTO_CS_VERSION=1.0.5
+ENV MAGENTO_CS_PACKAGE_NAME=marketplace-eqp
+ENV PATH=/home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}/vendor/bin:$PATH
+
 # add composer    
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && mkdir -p ${COMPOSER_HOME} \
-    && chmod 777 ${COMPOSER_HOME}
+    && chmod 777 ${COMPOSER_HOME} \
+# add magento2 cs
+    && curl -L -o /home/${CLI_USER}/${MAGENTO_CS_VERSION}.tar.gz https://github.com/magento/marketplace-eqp/archive/${MAGENTO_CS_VERSION}.tar.gz \
+    && tar -zxf /home/${CLI_USER}/${MAGENTO_CS_VERSION}.tar.gz --directory /home/${CLI_USER} \
+    && rm -f /home/${CLI_USER}/${MAGENTO_CS_VERSION}.tar.gz \
+    && chown -R ${CLI_USER}:${CLI_GROUP} /home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION} \
+    && su ${CLI_USER} -c "composer install -d /home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}"
 
 VOLUME ${COMPOSER_HOME}
