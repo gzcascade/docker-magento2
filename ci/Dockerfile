@@ -22,6 +22,7 @@ RUN set -xe \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng12-dev \
+        mysql-client \
     && rm -r /var/lib/apt/lists/* \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -33,19 +34,14 @@ RUN set -xe \
     && chmod 666 /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && rm -rf /tmp/*
 
-ENV COMPOSER_HOME=/tmp/.composer
+ENV COMPOSER_HOME=/home/${CLI_USER}/.composer
+# add composer    
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 ENV MAGENTO_CS_VERSION=1.0.5
 ENV MAGENTO_CS_PACKAGE_NAME=marketplace-eqp
 ENV PATH=/home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}/vendor/bin:$PATH
-
-# add composer    
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && mkdir -p ${COMPOSER_HOME} \
-    && chmod 777 ${COMPOSER_HOME} \
 # add magento2 cs
-    && gosu ${CLI_USER} curl -sSL https://github.com/magento/marketplace-eqp/archive/${MAGENTO_CS_VERSION}.tar.gz \
+RUN gosu ${CLI_USER} curl -sSL https://github.com/magento/marketplace-eqp/archive/${MAGENTO_CS_VERSION}.tar.gz \
     | gosu ${CLI_USER} tar -zx --directory /home/${CLI_USER} \
     && gosu ${CLI_USER} composer install -d /home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}
-
-VOLUME ${COMPOSER_HOME}
