@@ -45,3 +45,7 @@ ENV PATH=/home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}/vend
 RUN gosu ${CLI_USER} curl -sSL https://github.com/magento/marketplace-eqp/archive/${MAGENTO_CS_VERSION}.tar.gz \
     | gosu ${CLI_USER} tar -zx --directory /home/${CLI_USER} \
     && gosu ${CLI_USER} composer install -d /home/${CLI_USER}/${MAGENTO_CS_PACKAGE_NAME}-${MAGENTO_CS_VERSION}
+
+ENV DOCKERIZE_VERSION=v0.6.1
+RUN curl -sSL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
+    | tar xz -C /usr/local/bin
