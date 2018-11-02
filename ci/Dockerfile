@@ -22,6 +22,8 @@ RUN set -xe \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng12-dev \
+        openssh-client \
+        rsync \
         mysql-client \
     && rm -r /var/lib/apt/lists/* \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
