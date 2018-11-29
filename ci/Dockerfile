@@ -25,7 +25,7 @@ RUN set -xe \
         openssh-client \
         rsync \
         mysql-client \
-        corkscrew \
+        sshpass \
     && rm -r /var/lib/apt/lists/* \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
